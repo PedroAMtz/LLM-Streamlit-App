@@ -31,7 +31,31 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 
 delimitador = "####"
 
-system_message = f"""
+with st.sidebar: #Texto Acerca de que aparece en la barra desplegable del lado izquierdo
+    st.title('Acerca de')
+    st.write("""<div style='text-align: justify; text-justify: inter-word; text-align-last: center;'>Doc GPT es tu compañero 
+    médico en línea. 
+    Nuestro chatbot basado en 
+    inteligencia artificial está 
+    aquí para brindarte respuestas
+    rápidas y confiables a tus 
+    preguntas médicas. Aunque no 
+    sustituye una consulta médica 
+    personalizada, DocGPT cuenta
+    con una amplia base de 
+    conocimientos 
+    actualizada en medicina.  
+    Únete a DocGPT y obtén 
+    respuestas médicas
+    instantáneas. 
+    ¡Te acompañamos en el 
+    camino hacia la buena salud!</div>""", unsafe_allow_html=True)
+
+    uploaded_file = st.file_uploader("Subir archivo", accept_multiple_files=False) #Opción para subir mas de un archivo
+    if uploaded_file != None:
+        st.write("filename:", uploaded_file.name)
+
+        system_message = f"""
 
 Eres un asistente médico especializado creado para proporcionar información relevante.
 considerando ciertos archivos que el usuario cargará como su contexto.
@@ -43,9 +67,9 @@ Las búsquedas del usuario serán delimitadas con cuatro hashtags, i.e. {delimit
 Las búsquedas del usuario serán respecto al enfoque de alguna o todas de 
 las siguientes categorías: Tamizaje, Diagnóstico y Tratamiento.
 Estas categorías sirven como guía clínica para el usuario al momento de dar 
-seguimiento a pacientes, en este caso particular a pacientes con diabetes mellitus.
+seguimiento a pacientes con diversas enfermedades, dependiendo de lo que el usuario proporcione como contexto
 
-Para responder las preguntas del usuario utilizar la siguiente información: {langchain_pdf_reader("GPC_DM.pdf")[0]}
+Para responder las preguntas del usuario utilizar la siguiente información: {langchain_pdf_reader(uploaded_file.name)[0]}
 
 Si el usuario realiza una búsqueda sobre algo diferente a Tamizaje, Diagnóstico o Tratamiento de 
 la enfermedad, considere de una manera amable indicarle al usuario que sus funciones son enfocadas
@@ -53,9 +77,8 @@ en alguna de las tres categorías mencionadas anteriormente. Responda al usuario
 
 """
 
-
 if "messages" not in st.session_state: #Si no hay historial de mensajes muestra "¿En que puedo ayudarte?"
-    st.session_state["messages"] = [{"role": "assistant", "content": "¿Qué tal, en que puedo ayudarte? :smile:"}]
+    st.session_state["messages"] = [{"role": "assistant", "content": "¿Qué tal, en que puedo ayudarte? Recuerda subir el archivo que gustes que analice :smile:"}]
 
 for msg in st.session_state.messages: 
     st.chat_message(msg["role"]).write(msg["content"])
