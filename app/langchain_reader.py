@@ -29,7 +29,7 @@ def langchain_pdf_reader(pdf_file: str) -> list:
 
 if __name__ == "__main__":
 
-    pdf_file = "GPC_DM.pdf"
+    pdf_file = "Guia_curso_completa.pdf"
     text_extracted = langchain_pdf_reader(pdf_file=pdf_file)
     print(text_extracted)
 
